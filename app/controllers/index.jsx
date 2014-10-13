@@ -4,7 +4,10 @@ import CommentStore from 'app/stores/comment';
 
 var fnSubscription; // fn defined below
 
-var IndexRoute = React.createClass({
+// Controller keeps state and provides props
+// downward to components.  Component actions can then
+// Invoke callbacks exposed by the controller
+var IndexController = React.createClass({
   getInitialState: function() {
     return {comments: []};
   },
@@ -21,12 +24,8 @@ var IndexRoute = React.createClass({
   render: function() {
     /* jshint trailing:false, quotmark:false, newcap:false */
     return (
-      <CommentBox comments={this.state.comments} handleCommentSubmit={this.handleCommentSubmit} />
+      <CommentBox comments={this.state.comments} handleCommentSubmit={CommentStore.put} />
     );
-  },
-
-  handleCommentSubmit: function(comment) {
-    CommentStore.put(comment);
   }
 });
 
@@ -34,4 +33,4 @@ fnSubscription = function(comments) {
   this.setState({comments: comments});
 };
 
-export default IndexRoute;
+export default IndexController;
