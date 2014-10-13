@@ -2,29 +2,18 @@
 <html>
   <head>
     <title>Hello React</title>
-    <script src="node_modules/react/dist/react.js"></script>
-    <script src="node_modules/react/dist/JSXTransformer.js"></script>
+    <script src="bower_components/react-es6-loader/loader.js"></script>
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/react-router/dist/react-router.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/showdown/src/showdown.js"></script>
   </head>
   <body>
-
     <div id="content"></div>
-
-    <script type="text/jsx" src="comments.js"></script>
-
-    <script type="text/jsx">
-      /** @jsx React.DOM */
-      var data = [
-        {author: "Pete Hunt", text: "This is one comment"},
-        {author: "Jordan Walke", text: "This is *another* comment"}
-      ];
-
-      React.renderComponent(
-          <CommentBox data={data} />,
-          document.getElementById('content')
-      );
+    <script src="dist/deps.min.js"></script>
+    <script>
+      var Router = require("app/router")["default"];
+      React.renderComponent(Router, document.getElementById('content'));
     </script>
-
   </body>
 </html>
