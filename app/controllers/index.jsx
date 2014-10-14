@@ -4,33 +4,38 @@ import CommentStore from 'app/stores/comment';
 
 var fnSubscription; // fn defined below
 
-// Controller keeps state and provides props
+var getState = function () {
+  return {
+    'comments': CommentStore.getComments()
+  };
+};
+
+// Controller provides props
 // downward to components.  Component actions can then
 // Invoke callbacks exposed by the controller
 var IndexController = React.createClass({
   getInitialState: function() {
-    return {comments: []};
+    return getState();
   },
 
   componentDidMount: function() {
-    subscribe('stores/comment', fnSubscription, this);
-    CommentStore.get();
+    subscribe('comment', fnSubscription, this);
   },
 
   componentWillUnmount: function() {
-    unsubscribe('stores/comment', fnSubscription);
+    unsubscribe('comment', fnSubscription);
   },
 
   render: function() {
     /* jshint trailing:false, quotmark:false, newcap:false */
     return (
-      <CommentBox comments={this.state.comments} handleCommentSubmit={CommentStore.put} />
+      <CommentBox comments={this.state.comments} handleCommentSubmit={CommentStore.addComment} />
     );
   }
 });
 
-fnSubscription = function(comments) {
-  this.setState({comments: comments});
+fnSubscription = function() {
+  this.setState(getState());
 };
 
 export default IndexController;

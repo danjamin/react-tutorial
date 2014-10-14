@@ -2,32 +2,31 @@ import {publish} from 'app/pub-sub';
 import Ajax from 'app/ajax';
 
 var _comments = [];
-
-var TOPIC = 'stores/comment';
 var URL = 'comments.json';
+var _alreadyLoaded = false;
 
 var CommentStore = {
-  get: function() {
-    publish(TOPIC, _comments);
+  getComments: function() {
+    if (!_alreadyLoaded) {
+      _alreadyLoaded = true;
 
-    Ajax.get(URL).then(function(response) {
-      _comments = response.comments;
-      publish(TOPIC, _comments);
-      return _comments;
-    }, function(error) {
-      console.log(error);
-    });
+      Ajax.get(URL).then(function(response) {
+        _comments = response.comments;
+        publish('comment');
+        return _comments;
+      }, function(error) {
+        console.log(error);
+      });
+    }
+
+    return _comments;
   },
 
-  put: function(comment) {
+  addComment: function(comment) {
     _comments.push(comment);
-    publish(TOPIC, _comments);
+    publish('comment');
 
-    Ajax.put(URL, comment).then(function(response) {
-      _comments = response.comments;
-      publish(TOPIC, _comments);
-      return _comments;
-    }, function(error) {
+    Ajax.put(URL, comment).catch(function(error) {
       console.log(error);
     });
   }
