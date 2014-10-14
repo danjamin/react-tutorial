@@ -3,7 +3,9 @@
     "React",
     "ReactRouter",
     "Showdown",
-    "jQuery"
+    "jQuery",
+    "RSVP",
+    "XMLHttpRequest"
   ],
   "proto": true,
   "strict": false,

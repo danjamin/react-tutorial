@@ -1,6 +1,6 @@
 import {publish} from 'app/pub-sub';
+import Ajax from 'app/ajax';
 
-var $ = jQuery;
 var _comments = [];
 
 var TOPIC = 'stores/comment';
@@ -8,46 +8,28 @@ var URL = 'comments.json';
 
 var CommentStore = {
   get: function() {
-    var $xhr = $.getJSON(URL);
+    publish(TOPIC, _comments);
 
-    $xhr.then(function(response) {
+    Ajax.get(URL).then(function(response) {
       _comments = response.comments;
       publish(TOPIC, _comments);
-      return response;
-    }.bind(this));
-
-    $xhr.fail(function(xhr, status, err) {
-      console.error(URL, status, err.toString());
-    }.bind(this));
-
-    publish(TOPIC, _comments);
+      return _comments;
+    }, function(error) {
+      console.log(error);
+    });
   },
 
   put: function(comment) {
-    var $xhr;
-
     _comments.push(comment);
-
     publish(TOPIC, _comments);
 
-    $xhr = $.ajax({
-      url: URL,
-      dataType: 'json',
-      type: 'PUT',
-      data: comment
-    });
-
-    $xhr.then(function(response) {
+    Ajax.put(URL, comment).then(function(response) {
       _comments = response.comments;
       publish(TOPIC, _comments);
-      return response;
+      return _comments;
+    }, function(error) {
+      console.log(error);
     });
-    
-    $xhr.fail(function(xhr, status, err) {
-      console.log(URL, status, err.toString());
-    }.bind(this));
-
-    return _comments;
   }
 };
 
